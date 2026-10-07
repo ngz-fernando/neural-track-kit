@@ -1,4 +1,4 @@
-// GET /api/buscar?q=instalar openclaw vps → lecciones que encajan. Hermes lo usa cuando Fernando
+// GET /api/buscar?q=instalar openclaw vps → lecciones que encajan. Hermes lo usa cuando el usuario
 // dice con sus palabras qué ha visto, para marcarla con /api/hecho.
 import { read, authorized, fail } from './_store.js';
 import { searchLessons } from '../public/plan.mjs';

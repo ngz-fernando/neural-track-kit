@@ -1,6 +1,7 @@
 # Mensaje para Hermes
 
-Pégalo en tu chat con Hermes (Telegram) cambiando `https://TU-APP.vercel.app` por tu URL.
+Pégalo en tu chat con Hermes (Telegram) cambiando `https://TU-APP.vercel.app` por tu URL y
+`<TU ZONA>`, `<HORA MAÑANA>` y `<HORA TARDE>` por los de tu `public/config.mjs` (la skill lo hace por ti).
 **No pongas tu clave en el mensaje**: Hermes te dirá cómo guardarla como secreto.
 
 ```
@@ -26,6 +27,7 @@ GET https://TU-APP.vercel.app/api/buscar?q=<lo que he dicho>
 
 Cuando te pregunte «¿por dónde voy?»: GET https://TU-APP.vercel.app/api/resumen y mándame "text".
 
+Busca con las palabras del temario: si está en otro idioma, traduce lo que te diga.
 Si algo devuelve error, dímelo tal cual. Si tu servidor está en otra zona horaria, ajusta los crons.
 Antes de crear nada, prueba la URL de la mañana y enséñame lo que devuelve. Luego dime cómo se llaman los crons.
 ```

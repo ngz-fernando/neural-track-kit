@@ -41,10 +41,14 @@ for (const file of readdirSync(dir).filter(f => f.endsWith('.txt')).sort()) {
       c.modules.push(mod); continue;
     }
     if (!mod) { mod = { id: once(`${c.id}--general`), section: sec, title: 'General', kind: '', badge: '', tags: [], skipped: false, lessons: [] }; c.modules.push(mod); }
-    const done = line.startsWith('[x] ');
-    const title = done ? line.slice(4).trim() : line.replace(/^[-*•]\s*/, '');
+    // Acepta listas pegadas: «- [x] …», «* [ ] …», «[X] …», «1. …», «• …»
+    let t = line.replace(/^(?:[-*•]|\d+[.)])\s+/, '');
+    const box = t.match(/^\[( |x|X)\]\s*/);
+    const done = !!box && box[1].toLowerCase() === 'x';
+    const title = (box ? t.slice(box[0].length) : t).trim();
     mod.lessons.push({ id: once(`${mod.id}--${slug(title) || 'leccion'}`), title, tags: [], done, doneAt: null, note: '' });
   }
+  for (const m of c.modules) if (!m.lessons.length) console.warn(`⚠ ${c.name} › «${m.title}» no tiene lecciones`);
   const n = c.modules.reduce((a, m) => a + m.lessons.length, 0);
   console.log(`✔ ${c.name} (${c.id}): ${c.modules.length} módulos · ${n} lecciones · ${c.modules.reduce((a, m) => a + m.lessons.filter(l => l.done).length, 0)} vistas`);
   courses.push(c);
@@ -53,3 +57,6 @@ const version = createHash('sha1').update(JSON.stringify(courses)).digest('hex')
 writeFileSync(new URL('../public/seed.js', import.meta.url),
   `// Generado por scripts/build-seed.mjs a partir de cursos/*.txt — no editar a mano\n` +
   `window.SEED_VERSION = '${version}';\nwindow.SEED_RETIRED = [];\nwindow.SEED_COURSES = ${JSON.stringify(courses)};\n`);
+// Cambia la versión en index.html para que el navegador no se quede con el temario viejo.
+const idx = new URL('../public/index.html', import.meta.url);
+writeFileSync(idx, readFileSync(idx, 'utf8').replace(/(seed\.js|plan\.mjs|app\.js|styles\.css)\?v=[\w-]+/g, `$1?v=${version}`));

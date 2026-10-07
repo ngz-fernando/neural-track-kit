@@ -48,17 +48,23 @@ Por cada curso pregúntale: «¿Cómo me lo pasas? Un **enlace**, un **PDF** o f
 **capturas** o me lo **escribes/pegas** tal cual». Y **qué ha visto ya** de ese curso.
 Según lo que dé:
 - **Enlace público** (página del curso, programa de la asignatura, índice de un libro): ábrelo
-  con WebFetch y saca módulos y lecciones.
-- **Lista de YouTube**: prueba con WebFetch; si no salen todos los vídeos y está instalado
-  `yt-dlp`, usa `yt-dlp --flat-playlist --print "%(title)s" <url>`; si no, pídele que pegue los
-  títulos.
+  con WebFetch y saca módulos y lecciones. WebFetch resume: si solo te da el índice (temas sin
+  clases), entra en cada subpágina o descarga el HTML con `curl` y saca los títulos de ahí.
+  Revisa que ningún título salga cortado (pasa con fórmulas y símbolos).
+- **Lista de YouTube**: pídele la URL de la lista. WebFetch no ve los títulos (YouTube carga
+  por JavaScript), así que usa directamente `yt-dlp --flat-playlist --print "%(title)s" <url>`.
+  Si no está instalado, propón `brew install yt-dlp` (o `pip install yt-dlp`); si no quiere,
+  que pegue los títulos.
 - **Campus con login** (Moodle, Udemy, Skool, Thinkific, Hotmart…): **nunca pidas su
   contraseña**. Si tienes Claude in Chrome y tiene la sesión abierta, léelo desde su navegador
   (muchos campus marcan lo visto: cópialo como `[x] `). Si no, que copie y pegue la lista.
 - **PDF, foto o capturas** del temario: léelos y transcribe.
 - **A mano**: que te dicte o pegue la lista; tú la ordenas en módulos.
 - **Universidad**: los «módulos» son los temas; las «lecciones», clases, prácticas, ejercicios
-  y exámenes. Pregunta las fechas de examen y añádelas como lección («Examen parcial · 12/11»).
+  y exámenes. Pregunta las fechas de examen y añádelas como lección con la fecha completa
+  («Examen parcial · 12/11/2026»): el plan avisa «📅 Faltan N días» las dos semanas anteriores.
+- Un módulo necesita al menos una lección: si un capítulo no tiene apartados, pon el propio
+  capítulo como lección.
 
 Escribe un archivo `cursos/<id>.txt` por curso con el formato de `scripts/build-seed.mjs`
 (`@id`, `@nombre`, `@plataforma`, `@tipo`, `@color`, `## sección`, `# módulo`, una lección por
@@ -74,8 +80,9 @@ acepta el mismo formato pegado).
 
 Rellena `public/config.mjs` (sustituye los valores de ejemplo): `TZ`, `TIMES`, `COUNTS`,
 `SCHEDULE` (qué `@id` toca cada día; si pones dos, cuando se acaba el primero pasa al segundo),
-`LABEL` (nombre corto de cada curso) y `NEWEST_FIRST` si algún curso tiene una sección de
-directos que conviene ver de más reciente a más antiguo.
+`LABEL` (nombre corto de cada curso), `NEWEST_FIRST` si algún curso tiene una sección de
+directos que conviene ver de más reciente a más antiguo, y `TAGS`: 3-8 temas de SUS estudios
+para los filtros (p. ej. `['Derivadas', 'derivad|derivative', '#4f8bff']`).
 Enséñale la semana en una tabla y que la confirme.
 
 El plan **sigue su rastro**: cada curso continúa después del último vídeo que marque (no en
@@ -84,17 +91,25 @@ decir «quiero empezar aquí».
 
 ## Paso 4 · Publicar
 
-1. Repo de código en su GitHub: `gh repo create <usuario>/neural-track --private --source=. --push`.
+1. Repo de código en su GitHub. El clon todavía apunta a la plantilla y sus cursos no están
+   en ningún commit, así que primero:
+   `git remote remove origin && git add -A && git commit -m "Mis cursos"`
+   y después `gh repo create <usuario>/neural-track --private --source=. --push`.
 2. Repo de datos, **privado**: `gh repo create <usuario>/neural-track-data --private --add-readme`.
 3. App en Vercel: `vercel deploy --prod --yes`. Anota la URL y ponla en `APP_URL` de
    `config.mjs`; vuelve a publicar.
-4. Variables en Vercel (lánzale cada comando en su terminal; **él** pega el valor):
+4. Variables en Vercel. `vercel env add` es interactivo y **no funciona desde tu Bash**: dile
+   que lo escriba él en el prompt de Claude Code con `!` delante (por ejemplo
+   `! vercel env add NT_KEY production`) o en una terminal dentro de la carpeta, y que pegue el
+   valor cuando se lo pida:
    - `vercel env add NT_DATA_REPO production` → `<usuario>/neural-track-data` (esto sí puedes
      decirle qué escribir).
    - `vercel env add GITHUB_TOKEN production` → token *fine-grained* que crea él:
      GitHub → Settings → Developer settings → Fine-grained tokens → Generate new token ·
      Repository access: «Only select repositories» → `neural-track-data` ·
-     Permissions → «+ Add permissions» → **Contents** → cambia «Read-only» a **Read and write**.
+     Permissions → «+ Add permissions» → **Contents** → cambia «Read-only» a **Read and write** ·
+     **Expiration: 1 año o sin caducidad** (por defecto caduca a los 30 días y la app dejaría de
+     guardar sin avisar; que apunte la fecha).
    - `vercel env add NT_KEY production` → una contraseña que se invente él (será la clave de
      la app y de su agente). Que no te la diga.
 5. `vercel deploy --prod --yes` otra vez para que coja las variables. Comprueba:
@@ -109,7 +124,10 @@ Pregúntale: «¿Quieres que tu agente Hermes te mande por Telegram lo que toca 
 cada tarde?». Si no tiene Hermes o no quiere, sáltate este paso: la pestaña **Hoy** de la app ya
 le dice qué toca. Si quiere:
 
-Dale el mensaje de `docs/hermes.md` con su URL ya puesta. Explícale que **la clave no la pegue
+Dale el mensaje de `docs/hermes.md` con todo rellenado: su URL (`APP_URL`), su zona (`TZ`) y
+sus horas (`TIMES`) de config.mjs. Si algún día cambia las horas, hay que decírselo a Hermes:
+los crons no se actualizan solos. Hermes debe buscar con las palabras del temario (si el curso
+está en inglés y el usuario habla en español, que traduzca la búsqueda). Explícale que **la clave no la pegue
 en ese mensaje**: que Hermes la guarde como secreto `NEURAL_TRACK_KEY` en su servidor (Hermes le
 dirá cómo). Hermes prueba la URL, le enseña el plan de hoy y crea los dos crons.
 Prueba final: que le pida «mándame ya el plan de la tarde» y conteste «hecho 1».

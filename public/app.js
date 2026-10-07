@@ -1,4 +1,4 @@
-/* NEURAL_TRACK — registro de aprendizaje de IA. Todo se guarda en este navegador. */
+/* NEURAL_TRACK — tu app de estudio. Se guarda en el navegador y, con clave, en tu GitHub. */
 (() => {
   'use strict';
 
@@ -7,7 +7,9 @@
 
   // ---------- Etiquetas automáticas ----------
   // [nombre, regex, color]. Se aplican a sección, módulo y lección; se heredan hacia abajo.
-  const TAG_RULES = [
+  const BASE_RULES = [
+    ['Examen', /examen|\bexam\b|parcial|\bfinal\b|quiz|cuestionario/i, '#ff5c7a'],
+    ['Ejercicios', /ejercicio|problem set|pr[aá]ctica|\btest\b|tarea/i, '#ffb547'],
     ['Claude', /\bclaude\b(?!\s*code)|anthropic/i, '#ff8a4c'],
     ['Claude Code', /claude\s*code/i, '#ff6a2b'],
     ['ChatGPT', /chat\s?gpt|openai|\bgpts?\b|\bgpt-?\d/i, '#39ff88'],
@@ -53,6 +55,7 @@
     ['Ventas', /\bvend|\bventas?\b|propuestas? (comercial|personaliz)|prospec|\bcierre\b|embudo|\bleads?\b|conseguir clientes|primer cliente/i, '#ffa94d'],
     ['Fundamentos', /fundamentos|historia de la ia|\bllms?\b/i, '#9fb3c8'],
   ];
+  const TAG_RULES = [...(window.NTPlan?.TAGS || []).map(([n, src, c]) => [n, new RegExp(src, 'i'), c]), ...BASE_RULES];
   const TAG_COLOR = Object.fromEntries(TAG_RULES.map(([n, , c]) => [n, c]));
   const tagColor = name => TAG_COLOR[name] || `hsl(${[...name].reduce((a, ch) => a + ch.charCodeAt(0) * 7, 0) % 360} 85% 65%)`;
   const autoTags = text => TAG_RULES.filter(([, re]) => re.test(text || '')).map(([n]) => n);
@@ -593,9 +596,9 @@
     const isNew = !c;
     c = c || { name: '', provider: '', type: 'curso', color: PALETTE[state.courses.length % PALETTE.length], url: '' };
     modal(isNew ? 'Nuevo curso, máster o comunidad' : 'Editar curso', `
-      <label class="field"><span>Nombre</span><input name="name" required value="${esc(c.name)}" placeholder="p. ej. Curso de agentes con n8n"></label>
+      <label class="field"><span>Nombre</span><input name="name" required value="${esc(c.name)}" placeholder="p. ej. Cálculo I, Curso de Python, Inglés B2…"></label>
       <div class="row2">
-        <label class="field"><span>Plataforma / escuela</span><input name="provider" value="${esc(c.provider)}" placeholder="Skool, Udemy, YouTube…"></label>
+        <label class="field"><span>Plataforma / escuela</span><input name="provider" value="${esc(c.provider)}" placeholder="Universidad, Udemy, YouTube, libro…"></label>
         <label class="field"><span>Tipo</span><select name="type">${Object.entries(COURSE_TYPES).map(([k, v]) => `<option value="${k}" ${c.type === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
       </div>
       <div class="row2">
@@ -603,7 +606,7 @@
         <label class="field"><span>Color</span><input type="color" name="color" value="${esc(c.color)}"></label>
       </div>
       <label class="field"><span>${isNew ? 'Temario (opcional)' : 'Añadir más temario (opcional)'}</span>
-        <textarea name="syllabus" placeholder="## Fundamentos&#10;# Módulo 1 — Introducción&#10;Qué es un agente&#10;Instalar Claude Code&#10;# Módulo 2 — MCP&#10;Conectar Gmail por MCP"></textarea>${SYLLABUS_HINT}</label>
+        <textarea name="syllabus" placeholder="## Primer cuatrimestre&#10;# Tema 1 · Límites&#10;Clase 1&#10;[x] Clase 2 (ya vista)&#10;# Tema 2 · Derivadas&#10;Clase 3"></textarea>${SYLLABUS_HINT}</label>
     `, fd => {
       const data = { name: fd.get('name').trim(), provider: fd.get('provider').trim(), type: fd.get('type'), url: fd.get('url').trim(), color: fd.get('color') };
       const mods = parseSyllabus(fd.get('syllabus') || '', 'm');
@@ -626,7 +629,7 @@
         <label class="field"><span>Nombre del módulo</span><input name="title" required value="${esc(m.title)}"></label>
         <label class="field"><span>Sección</span><input name="section" value="${esc(m.section)}" placeholder="opcional"></label>
       </div>
-      <label class="field"><span>Etiquetas extra</span><input name="tags" value="${esc((m.tags || []).join(', '))}" placeholder="Claude, MCP, Ventas…">
+      <label class="field"><span>Etiquetas extra</span><input name="tags" value="${esc((m.tags || []).join(', '))}" placeholder="Examen, Prácticas…">
         <span class="hint">Automáticas: ${[...new Set([...autoTags(m.section), ...autoTags(m.title)])].join(', ') || '—'}. Separa con comas.</span></label>
       ${isNew ? `<label class="field"><span>Lecciones</span><textarea name="lessons" placeholder="Una lección por línea"></textarea></label>` : ''}
       ${!isNew ? `<label class="field" style="flex-direction:row;align-items:center;gap:10px"><input type="checkbox" name="skipped" ${m.skipped ? 'checked' : ''} style="width:auto"> <span style="text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:13px;color:var(--text)">Omitir este módulo (no lo voy a hacer; no cuenta en el progreso)</span></label>` : ''}
@@ -646,7 +649,7 @@
   function lessonModal(l, m) {
     modal('Editar lección', `
       <label class="field"><span>Título</span><input name="title" required value="${esc(l.title)}"></label>
-      <label class="field"><span>Etiquetas extra</span><input name="tags" value="${esc((l.tags || []).join(', '))}" placeholder="Claude, MCP…">
+      <label class="field"><span>Etiquetas extra</span><input name="tags" value="${esc((l.tags || []).join(', '))}" placeholder="Examen, Repaso…">
         <span class="hint">Heredadas y automáticas: ${[...new Set([...autoTags(m.section), ...autoTags(m.title), ...(m.tags || []), ...autoTags(l.title)])].join(', ') || '—'}</span></label>
       <div class="row2">
         <label class="field" style="flex-direction:row;align-items:center;gap:10px"><input type="checkbox" name="done" ${l.done ? 'checked' : ''} style="width:auto"> <span style="text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:13px;color:var(--text)">Hecha</span></label>

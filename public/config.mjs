@@ -24,5 +24,11 @@ export const LABEL = { 'ejemplo-uni': 'Cálculo I', 'ejemplo-online': 'Python', 
 // (id del curso → nombre de la sección donde están). Opcional.
 export const NEWEST_FIRST = {};
 
+// Temas de tus estudios para los filtros: [nombre, expresión regular, color]. La skill los propone.
+export const TAGS = [
+  ['Derivadas', 'derivad', '#4f8bff'],
+  ['Python', 'python|variables|bucles|funciones', '#39ff88'],
+];
+
 // URL pública de tu app (para el enlace del aviso). La skill la rellena al publicar.
 export const APP_URL = 'https://TU-APP.vercel.app';

@@ -1,5 +1,5 @@
 // POST /api/hecho  { ids: [...] }  → marca esas lecciones como vistas.
-// Hermes lo llama cuando Fernando contesta «hecho» (todas) o «hecho 1 y 3» (solo esas).
+// Hermes lo llama cuando el usuario contesta «hecho» (todas) o «hecho 1 y 3» (solo esas).
 import { read, write, authorized, fail, body } from './_store.js';
 
 export default async function handler(req, res) {

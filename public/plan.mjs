@@ -2,8 +2,8 @@
 // Lo usan la app (navegador) y las funciones de /api (Hermes),
 // así los dos calculan exactamente lo mismo.
 
-import { TZ, COUNTS, SCHEDULE, LABEL, NEWEST_FIRST, APP_URL, TIMES } from './config.mjs';
-export { TZ, COUNTS, TIMES, SCHEDULE, LABEL };
+import { TZ, COUNTS, SCHEDULE, LABEL, NEWEST_FIRST, APP_URL, TIMES, TAGS } from './config.mjs';
+export { TZ, COUNTS, TIMES, SCHEDULE, LABEL, TAGS };
 const DAYS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
 export function localDay(date = new Date()) {
@@ -60,6 +60,23 @@ export function nextInfo(state, courseId, n) {
 export const pending = (state, courseId, n) => nextInfo(state, courseId, n).items;
 const item = (c, m, l) => ({ id: l.id, title: l.title, module: m.title, section: m.section, course: c.name, courseId: c.id });
 
+// Exámenes con fecha en el título («Examen parcial · 12/11/2026») en las próximas 2 semanas.
+export function upcomingExams(state, date = new Date()) {
+  const today = new Date(date.toLocaleString('en-US', { timeZone: TZ })); today.setHours(0, 0, 0, 0);
+  const out = [];
+  for (const c of state.courses) for (const m of c.modules) for (const l of m.lessons) {
+    if (l.done || !/examen|\bexam\b|parcial|\bfinal\b|quiz/i.test(l.title)) continue;
+    const d = l.title.match(/(\d{1,2})[/-](\d{1,2})(?:[/-](\d{2,4}))?/);
+    if (!d) continue;
+    let y = d[3] ? (d[3].length === 2 ? 2000 + +d[3] : +d[3]) : today.getFullYear();
+    let when = new Date(y, +d[2] - 1, +d[1]);
+    if (!d[3] && when < today) when = new Date(y + 1, +d[2] - 1, +d[1]);
+    const days = Math.round((when - today) / 864e5);
+    if (days >= 0 && days <= 14) out.push({ days, title: l.title, course: LABEL[c.id] || c.name });
+  }
+  return out.sort((a, b) => a.days - b.days);
+}
+
 export function planFor(state, bloque, date = new Date(), counts = COUNTS) {
   const day = localDay(date);
   const sources = SCHEDULE[bloque]?.[day];
@@ -86,6 +103,7 @@ export function planFor(state, bloque, date = new Date(), counts = COUNTS) {
     '',
     ...lines,
     '',
+    ...upcomingExams(state, date).map(e => `📅 ${e.days === 0 ? 'HOY' : `Faltan ${e.days} día${e.days === 1 ? '' : 's'}`}: ${e.title} (${e.course})`),
     '✅ Cuando acabes dime «hecho» (o «hecho 1 y 3»).',
     `📲 ${APP_URL}/?v=hoy`,
   ].filter(l => l !== null).join('\n');
@@ -107,9 +125,9 @@ export function summary(state) {
   return lines.join('\n');
 }
 
-// ---------- Buscar una lección por lo que diga Fernando («he visto el de instalar OpenClaw») ----------
+// ---------- Buscar una lección por lo que diga Fernando («he visto el de derivadas») ----------
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-const words = s => norm(s).replace(/[^a-z0-9ñ]+/g, ' ').trim().split(' ').filter(w => w.length > 1);
+const words = s => norm(s).replace(/[^a-z0-9ñ]+/g, ' ').trim().split(' ').filter(w => w.length > 1 || /\d/.test(w));
 const STOP = new Set(['de', 'el', 'la', 'los', 'las', 'en', 'con', 'que', 'un', 'una', 'del', 'por', 'para', 'he', 'visto', 'vi', 'video', 'videos', 'leccion', 'clase', 'acabo', 'ver']);
 export function searchLessons(state, query, limit = 5) {
   const qs = words(query).filter(w => !STOP.has(w));
@@ -121,7 +139,10 @@ export function searchLessons(state, query, limit = 5) {
     if (removed.has(l.id)) continue;
     const title = words(l.title), ctx = words(`${m.title} ${m.section} ${c.name}`);
     let score = 0, ok = true;
-    for (const q of qs) { if (hit(q, title)) score += 3; else if (hit(q, ctx)) score += 1; else { ok = false; break; } }
+    for (const q of qs) {
+      if (/^\d+$/.test(q)) { if (title.includes(q)) score += 4; else if (ctx.includes(q)) score += 1; else { ok = false; break; } continue; }
+      if (hit(q, title)) score += 3; else if (hit(q, ctx)) score += 1; else { ok = false; break; }
+    }
     if (ok) out.push({ score, id: l.id, title: l.title, module: m.title, course: c.name, done: !!l.done });
   }
   return out.sort((a, b) => b.score - a.score).slice(0, limit);

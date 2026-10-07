@@ -8,8 +8,8 @@ Cada vez que te sientas a estudiar, lo primero es decidir qué toca. Neural Trac
 decisión:
 
 - 📚 **Todos tus cursos en un sitio**, con checklist por lección, notas y progreso.
-- 🔎 **Buscador** que encuentra el vídeo aunque lo escribas mal; **filtros por tema** (Claude Code,
-  n8n, OpenClaw…) que mezclan cursos.
+- 🔎 **Buscador** que encuentra la lección aunque la escribas mal; **filtros por tema** que mezclan
+  cursos (la skill los crea con tus temas) y aviso de **exámenes** («📅 Faltan 5 días»).
 - 🌅 **Plan diario**: por la mañana N vídeos de tu prioridad, por la tarde otros N de otro tema.
   Sigue tu rastro: continúa desde el último vídeo que marcaste, no desde el principio.
 - 🤖 **Opcional: tu agente (Hermes) te lo manda por Telegram**. Contestas «hecho» y se marca. Si le dices
@@ -45,6 +45,8 @@ cd neural-track && claude
 Y ya está: te pregunta qué estás estudiando y cómo quieres repartirlo, mete tus temarios, publica
 tu app en tu Vercel, crea tu repo privado para el progreso y te da el mensaje para tu Hermes.
 Las claves las pegas tú en Vercel: nunca pasan por el chat ni por el código.
+
+> Para crear el token de GitHub elige **caducidad de 1 año** (por defecto son 30 días).
 
 > ¿Prefieres la web? Botón verde **Use this template** → *Create a new repository* (privado),
 > clónalo y sigue desde el paso 2.
