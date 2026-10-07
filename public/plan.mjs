@@ -125,7 +125,7 @@ export function summary(state) {
   return lines.join('\n');
 }
 
-// ---------- Buscar una lección por lo que diga Fernando («he visto el de derivadas») ----------
+// ---------- Buscar una lección por lo que diga el usuario («he visto el de derivadas») ----------
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const words = s => norm(s).replace(/[^a-z0-9ñ]+/g, ' ').trim().split(' ').filter(w => w.length > 1 || /\d/.test(w));
 const STOP = new Set(['de', 'el', 'la', 'los', 'las', 'en', 'con', 'que', 'un', 'una', 'del', 'por', 'para', 'he', 'visto', 'vi', 'video', 'videos', 'leccion', 'clase', 'acabo', 'ver']);
