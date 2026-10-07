@@ -1,0 +1,20 @@
+// EJEMPLO (la skill borra los cursos/ejemplo-*.txt al meter los tuyos)
+@id ejemplo-uni
+@nombre Cálculo I (Universidad)
+@plataforma Universidad
+@tipo curso
+@color #4f8bff
+# Tema 1 · Límites y continuidad
+[x] Clase 1 · Concepto de límite
+[x] Clase 2 · Límites laterales e infinitos
+Clase 3 · Continuidad
+Ejercicios tema 1
+# Tema 2 · Derivadas
+Clase 4 · Definición de derivada
+Clase 5 · Reglas de derivación
+Clase 6 · Regla de la cadena
+Ejercicios tema 2
+# Tema 3 · Integrales
+Clase 7 · Integral indefinida
+Clase 8 · Integral definida
+Examen parcial

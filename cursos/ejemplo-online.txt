@@ -1,0 +1,17 @@
+// EJEMPLO (la skill borra los cursos/ejemplo-*.txt al meter los tuyos)
+@id ejemplo-online
+@nombre Curso online de Python
+@plataforma Plataforma online
+@tipo curso
+@color #39ff88
+# Módulo 1 · Primeros pasos
+[x] Bienvenida
+[x] Instalar Python
+Variables y tipos de datos
+# Módulo 2 · Control de flujo
+Condicionales
+Bucles
+Funciones
+# Módulo 3 · Proyecto
+Tu primer script
+Automatizar una tarea

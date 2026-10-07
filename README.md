@@ -1,16 +1,18 @@
 # 🧠 Neural Track
 
-**Un registro de todo lo que estás aprendiendo y un agente que te dice cada día qué vídeo toca.**
+**Tu app de estudio, con lo que sea que estudies.** La uni, cursos online, un máster, listas de
+YouTube, libros… Se la pides a Claude Code, te va preguntando y le pasas cada curso por enlace,
+PDF, capturas o a mano. Él lo mete todo y te monta el registro y el plan del día.
 
-Tienes varios cursos, un máster, una comunidad… y cada vez que te sientas a formarte, lo primero
-es decidir qué ver. Neural Track te quita esa decisión:
+Cada vez que te sientas a estudiar, lo primero es decidir qué toca. Neural Track te quita esa
+decisión:
 
 - 📚 **Todos tus cursos en un sitio**, con checklist por lección, notas y progreso.
 - 🔎 **Buscador** que encuentra el vídeo aunque lo escribas mal; **filtros por tema** (Claude Code,
   n8n, OpenClaw…) que mezclan cursos.
 - 🌅 **Plan diario**: por la mañana N vídeos de tu prioridad, por la tarde otros N de otro tema.
   Sigue tu rastro: continúa desde el último vídeo que marcaste, no desde el principio.
-- 🤖 **Tu agente (Hermes) te lo manda por Telegram**. Contestas «hecho» y se marca. Si le dices
+- 🤖 **Opcional: tu agente (Hermes) te lo manda por Telegram**. Contestas «hecho» y se marca. Si le dices
   «he visto el de instalar Claude Code», lo busca y lo marca.
 - ☁️ **Tu progreso en un repo privado de tu GitHub**: cada check es un commit (copia de
   seguridad gratis) y se sincroniza entre el ordenador y el móvil.

@@ -1,0 +1,12 @@
+// EJEMPLO (la skill borra los cursos/ejemplo-*.txt al meter los tuyos)
+@id ejemplo-youtube
+@nombre Lista de YouTube · Inglés B2
+@plataforma YouTube
+@tipo otro
+@color #ff3d3d
+# Lista de reproducción
+Vídeo 1 · Present perfect
+Vídeo 2 · Phrasal verbs comunes
+Vídeo 3 · Listening: entrevista
+Vídeo 4 · Conditionals
+Vídeo 5 · Speaking practice

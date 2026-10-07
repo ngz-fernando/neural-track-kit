@@ -13,12 +13,12 @@ export const COUNTS = { manana: 3, tarde: 2 };
 // Qué curso toca cada día (0 = domingo … 6 = sábado). Usa el id de tus cursos (el @id de cursos/*.txt).
 // Si pones varios, cuando el primero se acaba pasa al siguiente. Sin entrada = descanso.
 export const SCHEDULE = {
-  manana: { 1: ['ejemplo'], 2: ['ejemplo'], 3: ['ejemplo'], 4: ['ejemplo'], 5: ['ejemplo'], 6: ['ejemplo'] },
-  tarde: {},
+  manana: { 1: ['ejemplo-uni'], 2: ['ejemplo-online'], 3: ['ejemplo-uni'], 4: ['ejemplo-online'], 5: ['ejemplo-uni'], 6: ['ejemplo-online'] },
+  tarde: { 1: ['ejemplo-youtube'], 2: ['ejemplo-youtube'], 3: ['ejemplo-youtube'], 4: ['ejemplo-youtube'], 5: ['ejemplo-youtube'] },
 };
 
 // Nombre corto que sale en el aviso para cada curso.
-export const LABEL = { ejemplo: 'Curso de ejemplo' };
+export const LABEL = { 'ejemplo-uni': 'Cálculo I', 'ejemplo-online': 'Python', 'ejemplo-youtube': 'Inglés B2' };
 
 // Cursos con directos/sesiones que conviene ver de más reciente a más antiguo
 // (id del curso → nombre de la sección donde están). Opcional.
