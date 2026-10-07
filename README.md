@@ -19,24 +19,33 @@ Sin n8n ni base de datos: una web estática en Vercel + 5 funciones + GitHub.
 
 ## Montarlo (10-20 min)
 
-Necesitas [Claude Code](https://claude.com/claude-code), una cuenta de
-[Vercel](https://vercel.com) y una de [GitHub](https://github.com) (gratis).
+Necesitas [Claude Code](https://claude.com/claude-code) y cuentas gratis de
+[GitHub](https://github.com) y [Vercel](https://vercel.com).
+
+**1.** Abre la terminal y descárgalo:
 
 ```bash
-gh repo create neural-track --template ngz-fernando/neural-track-kit --private --clone
-cd neural-track
-claude
+git clone https://github.com/ngz-fernando/neural-track-kit neural-track
 ```
 
-Y dentro de Claude Code:
+**2.** Entra en la carpeta y abre Claude Code:
+
+```bash
+cd neural-track && claude
+```
+
+**3.** Dentro de Claude Code escribe:
 
 ```
 /montar-neural-track
 ```
 
-La skill te pregunta qué estás estudiando y cómo quieres repartirlo, mete tus temarios, publica
-la app y te da el mensaje para Hermes. Las claves las pegas tú en Vercel: nunca pasan por el chat
-ni por el código.
+Y ya está: te pregunta qué estás estudiando y cómo quieres repartirlo, mete tus temarios, publica
+tu app en tu Vercel, crea tu repo privado para el progreso y te da el mensaje para tu Hermes.
+Las claves las pegas tú en Vercel: nunca pasan por el chat ni por el código.
+
+> ¿Prefieres la web? Botón verde **Use this template** → *Create a new repository* (privado),
+> clónalo y sigue desde el paso 2.
 
 ## Cómo está hecho
 
