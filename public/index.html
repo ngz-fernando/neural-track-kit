@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Neural Track</title>
+  <meta name="description" content="Tu registro de todo lo que estás aprendiendo de IA: cursos, másters y comunidades." />
+  <meta name="theme-color" content="#06080c" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2306080c'/><path d='M8 22V10l8 8 8-8v12' fill='none' stroke='%2300e5ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">
+        <svg viewBox="0 0 32 32" width="26" height="26"><path d="M8 22V10l8 8 8-8v12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div>
+        <div class="brand-name">NEURAL<span>_</span>TRACK</div>
+        <div class="brand-sub mono">// learning log · IA</div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" data-view="hoy" role="tab">Hoy</button>
+      <button class="tab" data-view="today" role="tab">Cursos</button>
+      <button class="tab" data-view="syllabus" role="tab">Temario</button>
+      <button class="tab" data-view="log" role="tab">Historial</button>
+    </nav>
+    <div class="top-actions">
+      <button id="syncPill" class="sync-pill off" data-action="sync-settings" title="Sincronización con GitHub">☁ sin conectar</button>
+      <button class="btn ghost" data-action="export" title="Descargar copia de seguridad">⇩ Exportar</button>
+      <label class="btn ghost" title="Restaurar copia de seguridad">⇧ Importar<input type="file" accept="application/json" id="importFile" hidden /></label>
+      <button class="btn primary" data-action="add-course">+ Curso</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="side-title mono">CURSOS</div>
+      <div id="courseList"></div>
+      <button class="btn dashed full" data-action="add-course">+ Añadir curso, máster o comunidad</button>
+    </aside>
+
+    <section class="content">
+      <div id="filters"></div>
+      <div id="view"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" hidden></div>
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="seed.js?v=1" defer></script>
+  <script type="module">import * as P from "./plan.mjs?v=1"; window.NTPlan = P;</script>
+  <script src="app.js?v=1" defer></script>
+</body>
+</html>

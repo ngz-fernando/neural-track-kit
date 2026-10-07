@@ -1,0 +1,6 @@
+{
+  "name": "neural-track",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" }
+}
